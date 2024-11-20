@@ -2,10 +2,9 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { enableScreens } from 'react-native-screens';
-
-// Import your screen components
 import Login from './LoginScreen/Login';
 import MainScreen from './MainScreen/MainScreen';
+import Duty from './Screens/Duty';
 
 // Enable screens for better performance
 enableScreens();
@@ -28,6 +27,11 @@ const App = () => {
         <Stack.Screen
           name="MainScreen"
           component={MainScreen}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="Duty"
+          component={Duty}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -7,7 +7,7 @@ const HeaderScreen = () => {
   const navigation = useNavigation();
 
   const handleWork = () => {
-    // Logic for work
+    navigation.navigate('Duty');
   };
 
   const handleCalendar = () => {
@@ -26,11 +26,10 @@ const HeaderScreen = () => {
     <SafeAreaView style={styles.headerContainer}>
       {/* Logo Section */}
       <Image
-        source={require('../../assets/images/attendance-logo.png')} // Your logo file path
+        source={require('../../assets/images/attendance-logo.png')} 
         style={styles.logo}
         resizeMode="contain"
       />
-
       {/* Icons Section */}
       <View style={styles.iconsContainer}>
         <TouchableOpacity onPress={handleWork} activeOpacity={0.7}>
@@ -40,7 +39,7 @@ const HeaderScreen = () => {
           <Icon name="calendar-month" size={27} color="#fff" style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handlePassword} activeOpacity={0.7}>
-          <Icon name="password" size={27} color="#fff" style={styles.icon} />
+          <Icon name="lock-outline" size={27} color="#fff" style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleLogout} activeOpacity={0.7}>
           <Icon name="logout" size={27} color="#fff" style={styles.icon} />
