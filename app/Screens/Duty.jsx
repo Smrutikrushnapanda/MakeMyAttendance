@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, BackHandler } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  BackHandler,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { TabView, SceneMap } from "react-native-tab-view";
@@ -50,7 +57,12 @@ const Duty = ({ navigation }) => {
       {/* Header Section */}
       <View style={styles.dutyHeader}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={30} color="#fff" style={styles.backicon} />
+          <Icon
+            name="arrow-back"
+            size={30}
+            color="#fff"
+            style={styles.backicon}
+          />
         </TouchableOpacity>
         <Text style={styles.dutyName}>Duty Allotment</Text>
       </View>
@@ -95,7 +107,7 @@ export default Duty;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#d8efff',
+    backgroundColor: "#d8efff",
   },
   dutyHeader: {
     height: 60,
