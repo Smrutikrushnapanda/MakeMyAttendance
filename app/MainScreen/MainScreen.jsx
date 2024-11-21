@@ -8,11 +8,12 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { CameraView, useCameraPermissions } from "expo-camera"; // Use Camera, CameraType, useCameraPermissions from expo-camera
+import { CameraView, useCameraPermissions } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import axios from "axios";
 import HeaderScreen from "../Components/HeaderScreen";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 
 const MainScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -21,14 +22,13 @@ const MainScreen = () => {
   const [checkOutTime, setCheckOutTime] = useState(null);
   const [photoUri, setPhotoUri] = useState(null);
   const [facing, setFacing] = useState("front");
-  const [empData, setEmpData] = useState(""); // Corrected state variable
+  const [empData, setEmpData] = useState({}); // Initialize as object
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const cameraRef = useRef(null);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
 
-  // Use the new hook for permissions
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
 
   useEffect(() => {
@@ -51,21 +51,38 @@ const MainScreen = () => {
           "https://makemyattendance.free.beeceptor.com/api/mma"
         );
         console.log(response.data);
-        setEmpData(response.data); // Correct data saving to empData
+        setEmpData(response.data); // Save data to empData
+
+        // Show success toast if data is fetched successfully
+        if (response.data && Object.keys(response.data).length > 0) {
+          Toast.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: 'Success',
+            textBody: 'Employee data fetched successfully!',
+          });
+        } else {
+          Toast.show({
+            type: ALERT_TYPE.ERROR,
+            title: 'Error',
+            textBody: 'No employee data found.',
+          });
+        }
       } catch (error) {
         console.error("Error fetching employee data:", error);
-        Alert.alert("Error", "Could not fetch employee data");
+
+        // Show error toast on fetch failure
+        Toast.show({
+          type: ALERT_TYPE.ERROR,
+          title: 'Error',
+          textBody: 'Could not fetch employee data.',
+        });
       }
     };
 
     fetchEmployeeData();
-  }, []); // Employee data fetching only once on component mount
-
-  // if (loading) return ;
-  if (error) return <Text>Error: {error}</Text>;
+  }, []); // Fetch employee data once on component mount
 
   const handleCheckInOut = async () => {
-    // Alert.alert(cameraRef)
     if (!cameraRef.current) {
       console.error("Camera is not initialized");
       Alert.alert("Error", "Camera is not ready.");
@@ -73,29 +90,24 @@ const MainScreen = () => {
     }
 
     try {
-      setIsCameraVisible(false);
+      setIsCameraVisible(false);  // Hide camera view after picture is taken
       
-    
- 
-      Alert.alert("hello");
-      // Capture the picture
-      const photo = await cameraRef.current.takePictureAsync();
-
-      Alert.alert(photo)
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 0.5,
+        base64: false,
+      });
 
       if (photo.uri) {
         setPhotoUri(photo.uri);
         await MediaLibrary.saveToLibraryAsync(photo.uri);
-        const currentTime = new Date().toISOString(); // Use ISO format for timestamp
 
-        // Handle check-in/check-out logic
+        const currentTime = new Date().toISOString();
         if (!isCheckedIn) {
           setCheckInTime(currentTime);
         } else {
           setCheckOutTime(currentTime);
         }
 
-        // Prepare FormData
         const formData = new FormData();
         formData.append("photo", {
           uri: photo.uri,
@@ -104,27 +116,26 @@ const MainScreen = () => {
         });
         formData.append("time", currentTime);
 
-        // Make the API call
         const response = await axios.post(
-          "https://makemyattendance2.free.beeceptor.com/post/mma",
-          formData
+          "https://makemyattendance.free.beeceptor.com/api/mma",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
         );
 
-        console.log("API Response:", response.data);
         Alert.alert(
           `${isCheckedIn ? "Check-out" : "Check-in"} Successful`,
-          `You have successfully ${
-            isCheckedIn ? "checked out" : "checked in"
-          } at ${currentTime}`
+          `You have successfully ${isCheckedIn ? "checked out" : "checked in"} at ${currentTime}`
         );
-        setIsCheckedIn(!isCheckedIn);
+
+        setIsCheckedIn(!isCheckedIn); // Toggle check-in/check-out state
       } else {
-        console.error("Failed to capture image: No URI found");
         Alert.alert("Error", "Failed to capture image");
       }
     } catch (error) {
       console.error("Error capturing image:", error);
-      // Alert.alert("Error", `Something went wrong: ${error.message}`);
+      Alert.alert("Error", `Something went wrong: ${error.message}`);
     }
   };
 
@@ -153,13 +164,9 @@ const MainScreen = () => {
             <View style={styles.employeeData}>
               <Text style={styles.Company}>MINDTRACK TECHNOLOGY PVT LTD</Text>
               {empData ? (
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
+                <View style={{ justifyContent: "center", alignItems: "center" }}>
                   <Text style={styles.employeeName}>{empData.Name}</Text>
-                  <Text style={styles.designation}>
-                    {empData.designation || "No Designation"}
-                  </Text>
+                  <Text style={styles.designation}>{empData.designation}</Text>
                 </View>
               ) : (
                 <ActivityIndicator size="small" color="#858585" />
@@ -167,10 +174,7 @@ const MainScreen = () => {
             </View>
 
             <TouchableOpacity
-              style={[
-                styles.InOut,
-                { backgroundColor: isCheckedIn ? "red" : "#1ba000" },
-              ]}
+              style={[styles.InOut, { backgroundColor: isCheckedIn ? "red" : "#1ba000" }]}
               onPress={() => setIsCameraVisible(true)}
             >
               <Text style={styles.InOutData}>{isCheckedIn ? "OUT" : "IN"}</Text>
@@ -181,15 +185,9 @@ const MainScreen = () => {
             </View>
             <View>
               {empData ? (
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
-                  <Text style={styles.intime}>
-                    Check-in: {empData.checkin || "No check-in data"}
-                  </Text>
-                  <Text style={styles.intime}>
-                    Check-out: {empData.checkout || "No check-out data"}
-                  </Text>
+                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                  <Text style={styles.intime}>Check-in: {empData.checkin || "No check-in data"}</Text>
+                  <Text style={styles.intime}>Check-out: {empData.checkout || "No check-out data"}</Text>
                 </View>
               ) : (
                 <ActivityIndicator size="small" color="#a5a5a5" />
@@ -198,16 +196,8 @@ const MainScreen = () => {
           </View>
         </>
       ) : (
-        <CameraView
-          style={styles.camera}
-          facing={facing}
-          ref={cameraRef}
-          ratio="16:9"
-        >
-          <TouchableOpacity
-            style={styles.captureButton}
-            onPress={handleCheckInOut}
-          >
+        <CameraView style={styles.camera} facing={facing} ref={cameraRef} ratio="16:9">
+          <TouchableOpacity style={styles.captureButton} onPress={handleCheckInOut}>
             <Icon name="camera" size={80} color="#ffffff" />
           </TouchableOpacity>
         </CameraView>
