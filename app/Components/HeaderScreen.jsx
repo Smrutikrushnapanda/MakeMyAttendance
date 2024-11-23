@@ -18,7 +18,7 @@ const HeaderScreen = () => {
   };
 
   const handleCalendar = () => {
-    // Logic for calendar
+    navigation.navigate("Leave");
   };
 
   const handlePassword = () => {

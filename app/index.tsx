@@ -5,6 +5,8 @@ import { enableScreens } from "react-native-screens";
 import Login from "./LoginScreen/Login";
 import MainScreen from "./MainScreen/MainScreen";
 import Duty from "./Screens/Duty";
+import Leave from "./Screens/Leave";
+
 
 // Enable screens for better performance
 enableScreens();
@@ -32,6 +34,11 @@ const App = () => {
         <Stack.Screen
           name="Duty"
           component={Duty}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Leave"
+          component={Leave}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
