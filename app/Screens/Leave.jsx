@@ -6,7 +6,8 @@ import {
   Dimensions,
   BackHandler,
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  Alert
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -15,6 +16,8 @@ import { Dropdown } from "react-native-element-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from 'axios';
 
+
+
 const OPTIONS1 = [
   { label: "Morning Shift", value: "Morning Shift" },
   { label: "Day Shift", value: "Day Shift" },
@@ -22,6 +25,7 @@ const OPTIONS1 = [
   { label: "General Shift", value: "General Shift" },
   { label: "Tour Duty", value: "Tour Duty" },
   { label: "Weekly Off", value: "Weekly Off" },
+
 ];
 const OPTIONS2 = [
   { label: "Sambhusil Manohar Das", value: "Sambhusil Manohar Das" },
@@ -37,7 +41,10 @@ const Leave = ({ navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [shift, setShift] = useState(null);
   const [replacement, setReplacement] = useState(null);
-  const [leaveData, setLeaveData] = useState([]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
 
 
   const handleDateChange = (event, selectedDate) => {
@@ -62,24 +69,69 @@ const Leave = ({ navigation }) => {
     }
   }
 
-  
+const mokedata=[
+  {
+    "date": 1732706262,
+    "shiftData": "shiftData 1",
+    "replacementData": "replacementData 1",
+    "status": true,
+    "id": "1"
+  },
+  {
+    "date": 1732706202,
+    "shiftData": "shiftData 2",
+    "replacementData": "replacementData 2",
+    "status": false,
+    "id": "2"
+  },
+  {
+    "date": 1732706142,
+    "shiftData": "shiftData 3",
+    "replacementData": "replacementData 3",
+    "status": false,
+    "id": "3"
+  },
+  {
+    "date": 1732706082,
+    "shiftData": "shiftData 4",
+    "replacementData": "replacementData 4",
+    "status": true,
+    "id": "4"
+  },
+  {
+    "date": 1732706022,
+    "shiftData": "shiftData 5",
+    "replacementData": "replacementData 5",
+    "status": true,
+    "id": "5"
+  }
+]
 
-  const getLeaveData = () => {
-    axios
-      .get("https://673890ed4eb22e24fca84f40.mockapi.io/MMA/Login")
-      .then((res) => {
-        setLeaveData(res.data || []); // Ensure fallback to an empty array
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        Alert.alert("Error", "Could not get data");
-        setLeaveData([]); // Fallback to an empty array
-      });
-  };
 
-  useEffect(() => {
-    getLeaveData()
+
+  // get data 
+
+   useEffect(() => {
+    const fetchLeaveData = async () => {
+      try {
+        const response = await axios.get(
+          'mokedata',
+        );
+        setData(response.data);
+        setLoading(false);
+        console.log('Data fetched successfully:', response.data);
+      } catch (e) {
+        setError(e);
+        setLoading(false);
+        Alert.alert('Data fetching error:');
+      }
+    };
+
+    fetchLeaveData();
   }, []);
+
+
+  
 
   const FirstTab = () => (
     <View style={styles.scene1}>
@@ -130,47 +182,77 @@ const Leave = ({ navigation }) => {
   );
 
   const SecondTab = () => (
-    <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.scrollViewContent}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={styles.scene2}>
-        {
-          leaveData.map((currentData, index) => (
-            <View style={styles.leaveStatus} key={index}>
-              <View style={styles.leaveItem}>
-                <Text style={styles.leaveLabel}>Shift</Text>
-                <Text style={styles.leaveValue}>{currentData.shiftData}</Text>
-              </View>
-  
-              <View style={styles.leaveItem}>
-                <Text style={styles.leaveLabel}>Date</Text>
-                <Text style={styles.leaveValue}>
-                  {new Date(currentData.date).toLocaleDateString()}
-                </Text>
-              </View>
-  
-              <View style={styles.leaveItem}>
-                <Text style={styles.leaveLabel}>Status</Text>
-                <Text style={styles.leaveValue}>
-                  {currentData.status || "Pending"}
-                </Text>
-              </View>
-  
-              <View style={styles.leaveItem}>
-                <Text style={styles.leaveLabel}>Replacement Employee</Text>
-                <Text style={styles.leaveValue}>
-                  {currentData.replacementData || "N/A"}
-                </Text>
-              </View>
-            </View>
-          ))
-        }
+    <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false}
+        >
+    <View style={styles.scene2}>
+      
+
+      {data.map((curElem,index)=>{
+        return (
+        <View style={styles.leaveStatus} key={index}>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Shift</Text>
+          <Text style={styles.leaveValue}>{curElem.shiftData}</Text>
+        </View>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Date</Text>
+          <Text style={styles.leaveValue}>{curElem.date}</Text>
+        </View>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Status</Text>
+          <Text style={styles.leaveValue}>{curElem.status}</Text>
+        </View>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Replacement Employee</Text>
+          <Text style={styles.leaveValue}>{curElem.replacementData}</Text>
+        </View>
       </View>
+      )})}
+
+      {/* <View style={styles.leaveStatus}>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Shift</Text>
+          <Text style={styles.leaveValue}>NightShift</Text>
+        </View>
+
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Date</Text>
+          <Text style={styles.leaveValue}>08-12-2024</Text>
+        </View>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Status</Text>
+          <Text style={styles.leaveValue}>Pending</Text>
+        </View>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Replacement Employee</Text>
+          <Text style={styles.leaveValue}>Smruti K Panda</Text>
+        </View>
+      </View>
+      <View style={styles.leaveStatus}>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Shift</Text>
+          <Text style={styles.leaveValue}>NightShift</Text>
+        </View>
+
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Date</Text>
+          <Text style={styles.leaveValue}>08-12-2024</Text>
+        </View>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Status</Text>
+          <Text style={styles.leaveValue}>Pending</Text>
+        </View>
+        <View style={styles.leaveItem}>
+          <Text style={styles.leaveLabel}>Replacement Employee</Text>
+          <Text style={styles.leaveValue}>Smruti K Panda</Text>
+        </View>
+      </View> */}
+    </View>
     </ScrollView>
   );
-  
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
