@@ -39,6 +39,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-native": "0.76.2",
     "react-native-animated-spinkit": "^1.5.2",
+    "react-native-element-dropdown": "^2.12.2",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-image-picker": "^7.1.2",
     "react-native-paper": "^5.12.5",

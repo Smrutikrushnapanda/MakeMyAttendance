@@ -49,7 +49,7 @@ const MainScreen = () => {
   const getDate = () => {
     axios.get(`https://673890ed4eb22e24fca84f40.mockapi.io/MMA/MMA`)
       .then((res) => {
-        setEmpData(res.data[0])
+        setEmpData(res.data)
       })
       .catch((error) => {
         Alert.alert("Error", "Couldnot get data")
@@ -167,8 +167,8 @@ const MainScreen = () => {
               <Text style={styles.Company}>MINDTRACK TECHNOLOGY PVT LTD</Text>
               {empData.length > 0 ? (
                 <View style={{ justifyContent: "center", alignItems: "center" }}>
-                  <Text style={styles.employeeName}>{empData.empname}</Text>
-                  <Text style={styles.designation}>{empData.designation}</Text>
+                  <Text style={styles.employeeName}>{empData.empname || "No employee data"}</Text>
+                  <Text style={styles.designation}>{empData.designation || "No employee data"}</Text>
                 </View>
               ) : (
                 <ActivityIndicator size="small" color="#858585" />
