@@ -23,7 +23,7 @@ const HeaderScreen = () => {
   };
 
   const handlePassword = () => {
-    // Logic for password
+    navigation.navigate("ChangePassword");
   };
 
   const handleLogout = async () => {

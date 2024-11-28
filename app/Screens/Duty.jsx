@@ -4,11 +4,11 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
-  BackHandler,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import React, { useState } from "react";
 import { TabView, SceneMap } from "react-native-tab-view";
+import AppHead from '../Components/AppHead';
+
 
 const FirstTab = () => (
   <View style={styles.scene1}>
@@ -36,37 +36,10 @@ const Duty = ({ navigation }) => {
     second: SecondTab,
   });
 
-  useEffect(() => {
-    const backAction = () => {
-      navigation.goBack(); // This will navigate to the previous screen
-      return true; // Prevent the default back action
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => {
-      backHandler.remove(); // Clean up the listener when the component unmounts
-    };
-  }, [navigation]);
-
   return (
     <View style={styles.container}>
       {/* Header Section */}
-      <View style={styles.dutyHeader}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon
-            name="arrow-back"
-            size={30}
-            color="#fff"
-            style={styles.backicon}
-          />
-        </TouchableOpacity>
-        <Text style={styles.dutyName}>Duty Allotment</Text>
-      </View>
-
+      <AppHead headerName="Duty"/>
       {/* TabView Section */}
       <TabView
         navigationState={{ index, routes }}

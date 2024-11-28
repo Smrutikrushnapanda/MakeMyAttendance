@@ -6,6 +6,8 @@ import Login from "./LoginScreen/Login";
 import MainScreen from "./MainScreen/MainScreen";
 import Duty from "./Screens/Duty";
 import Leave from "./Screens/Leave";
+import ChangePassword from "./Screens/ChangePassword";
+
 
 
 // Enable screens for better performance
@@ -39,6 +41,11 @@ const App = () => {
         <Stack.Screen
           name="Leave"
           component={Leave}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ChangePassword"
+          component={ChangePassword}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

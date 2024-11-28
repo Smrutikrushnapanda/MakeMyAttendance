@@ -15,7 +15,7 @@ import { TabView, SceneMap } from "react-native-tab-view";
 import { Dropdown } from "react-native-element-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from 'axios';
-
+import AppHead from '../Components/AppHead'
 
 
 const OPTIONS1 = [
@@ -56,7 +56,8 @@ const Leave = ({ navigation }) => {
     const formData = {
       date: inputDate.toISOString(),
       shiftData: shift,
-      replacementData: replacement
+      replacementData: replacement,
+      status: true,
     };
     try {
       const response = await axios.post('https://673890ed4eb22e24fca84f40.mockapi.io/MMA/Login', formData);
@@ -69,43 +70,43 @@ const Leave = ({ navigation }) => {
     }
   }
 
-const mokedata=[
-  {
-    "date": 1732706262,
-    "shiftData": "shiftData 1",
-    "replacementData": "replacementData 1",
-    "status": true,
-    "id": "1"
-  },
-  {
-    "date": 1732706202,
-    "shiftData": "shiftData 2",
-    "replacementData": "replacementData 2",
-    "status": false,
-    "id": "2"
-  },
-  {
-    "date": 1732706142,
-    "shiftData": "shiftData 3",
-    "replacementData": "replacementData 3",
-    "status": false,
-    "id": "3"
-  },
-  {
-    "date": 1732706082,
-    "shiftData": "shiftData 4",
-    "replacementData": "replacementData 4",
-    "status": true,
-    "id": "4"
-  },
-  {
-    "date": 1732706022,
-    "shiftData": "shiftData 5",
-    "replacementData": "replacementData 5",
-    "status": true,
-    "id": "5"
-  }
-]
+// const mokedata=[
+//   {
+//     "date": 1732706262,
+//     "shiftData": "shiftData 1",
+//     "replacementData": "replacementData 1",
+//     "status": true,
+//     "id": "1"
+//   },
+//   {
+//     "date": 1732706202,
+//     "shiftData": "shiftData 2",
+//     "replacementData": "replacementData 2",
+//     "status": false,
+//     "id": "2"
+//   },
+//   {
+//     "date": 1732706142,
+//     "shiftData": "shiftData 3",
+//     "replacementData": "replacementData 3",
+//     "status": false,
+//     "id": "3"
+//   },
+//   {
+//     "date": 1732706082,
+//     "shiftData": "shiftData 4",
+//     "replacementData": "replacementData 4",
+//     "status": true,
+//     "id": "4"
+//   },
+//   {
+//     "date": 1732706022,
+//     "shiftData": "shiftData 5",
+//     "replacementData": "replacementData 5",
+//     "status": true,
+//     "id": "5"
+//   }
+// ]
 
 
 
@@ -283,18 +284,7 @@ const mokedata=[
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.dutyHeader}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon
-            name="arrow-back"
-            size={30}
-            color="#fff"
-            style={styles.backicon}
-          />
-        </TouchableOpacity>
-        <Text style={styles.dutyName}>Leave Status</Text>
-      </View>
-
+      <AppHead headerName="Leave Status"/>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -339,22 +329,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#d8efff",
   },
-  dutyHeader: {
-    height: 60,
-    width: "100%",
-    backgroundColor: "#007ab3",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 15,
-  },
-  backicon: {
-    marginRight: 10,
-  },
-  dutyName: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-  },
+  // dutyHeader: {
+  //   height: 60,
+  //   width: "100%",
+  //   backgroundColor: "#007ab3",
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   paddingHorizontal: 15,
+  // },
+  // backicon: {
+  //   marginRight: 10,
+  // },
+  // dutyName: {
+  //   fontSize: 18,
+  //   color: "#fff",
+  //   fontWeight: "bold",
+  // },
   tabView: {
     flex: 1,
   },

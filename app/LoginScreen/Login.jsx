@@ -1,13 +1,28 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, SafeAreaView, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  Image, 
+  TouchableOpacity, 
+  TextInput, 
+  SafeAreaView, 
+  ScrollView, 
+  KeyboardAvoidingView, 
+  Alert 
+} from 'react-native';
 import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+
+
 
 const Login = () => {
   const [phonenumber, setPhonenumber] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -28,9 +43,50 @@ const Login = () => {
     setPhonenumber(cleanedText);
   };
 
-  const handelLogin = () => {
-    navigation.navigate('MainScreen');
+  const validateInputs = () => {
+    if (phonenumber.length !== 10) {
+      Alert.alert('Invalid Input', 'Phone number must be 10 digits.');
+      return false;
+    }
+    if (password.length < 6) {
+      Alert.alert('Invalid Input', 'Password must be at least 6 characters.');
+      return false;
+    }
+    return true;
   };
+
+  const handleLogin = async () => {
+    if (!validateInputs()) return;
+
+    setLoading(true);
+
+    // Simulating an API call for user authentication
+    setTimeout(async () => {
+      setLoading(false);
+
+      // Example: Replace this with actual API call and response handling
+      const isAuthenticated = phonenumber === '1234567890' && password === 'password'; // Mock
+      const mockToken = 'abcdef123456'; // Mock token
+
+      if (isAuthenticated) {
+        await AsyncStorage.setItem('userToken', mockToken);
+        navigation.navigate('MainScreen');
+      } else {
+        Alert.alert('Login Failed', 'Invalid phone number or password.');
+      }
+    }, 1000);
+  };
+
+  const checkToken = async () => {
+    const token = await AsyncStorage.getItem('userToken');
+    if (token) {
+      navigation.navigate('MainScreen');
+    }
+  };
+
+  React.useEffect(() => {
+    checkToken();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,7 +103,7 @@ const Login = () => {
           />
           <Text style={styles.usertext}>User Login</Text>
           <View style={styles.formContainer}>
-            <Text style={styles.label}>Username:</Text>
+            <Text style={styles.label}>Phone Number:</Text>
             <View style={[styles.inputContainer, focusedInput === 'phonenumber' && styles.inputContainerFocused]}>
               <Icon name="person" size={24} color="#a19f9f" style={styles.inputIcon} />
               <TextInput 
@@ -81,8 +137,8 @@ const Login = () => {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.loginButton} onPress={handelLogin}>
-              <Text style={styles.buttonText}>Login</Text>
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
+              <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -92,6 +148,9 @@ const Login = () => {
 };
 
 export default Login;
+
+// Styles remain the same as before
+
 
 const styles = StyleSheet.create({
   container: {
