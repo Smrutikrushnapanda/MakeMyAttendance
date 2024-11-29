@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
   SafeAreaView,
   Image,
   TouchableOpacity,
+  Alert
   
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -12,8 +13,12 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HeaderScreen = () => {
+  const [phonenumber, setPhonenumber] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
+
+  
   const handleWork = () => {
     navigation.navigate("Duty");
   };
@@ -27,10 +32,28 @@ const HeaderScreen = () => {
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("userToken");
-    navigation.navigate("Login");
+    Alert.alert(
+      "Confirm Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            await AsyncStorage.removeItem('userToken');
+            setPhonenumber(''); // Clear the phone number input
+            setPassword('');    // Clear the password input
+            navigation.navigate('Login'); // Navigate to Login screen
+          },
+        },
+      ]
+    );
   };
-
+  
   return (
     <SafeAreaView style={styles.headerContainer}>
       {/* Logo Section */}

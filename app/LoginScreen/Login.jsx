@@ -57,25 +57,28 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!validateInputs()) return;
-
+  
     setLoading(true);
-
+  
     // Simulating an API call for user authentication
     setTimeout(async () => {
       setLoading(false);
-
+  
       // Example: Replace this with actual API call and response handling
-      const isAuthenticated = phonenumber === '1234567890' && password === 'password'; // Mock
+      const isAuthenticated = phonenumber === '1234567890' && password === '123456'; // Mock
       const mockToken = 'abcdef123456'; // Mock token
-
+  
       if (isAuthenticated) {
         await AsyncStorage.setItem('userToken', mockToken);
-        navigation.navigate('MainScreen');
+        setPhonenumber(''); // Clear the phone number input
+        setPassword('');    // Clear the password input
+        navigation.navigate('MainScreen'); // Navigate to MainScreen
       } else {
         Alert.alert('Login Failed', 'Invalid phone number or password.');
       }
     }, 1000);
   };
+  
 
   const checkToken = async () => {
     const token = await AsyncStorage.getItem('userToken');

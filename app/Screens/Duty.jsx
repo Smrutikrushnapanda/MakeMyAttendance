@@ -26,8 +26,8 @@ const Duty = ({ navigation }) => {
   // State for TabView index and routes
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "first", title: "Tab 1" },
-    { key: "second", title: "Tab 2" },
+    { key: "first", title: "Recent Duty" },
+    { key: "second", title: "Next Month Duty"},
   ]);
 
   // Scene mapping for rendering the content of each tab
